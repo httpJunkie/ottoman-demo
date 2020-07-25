@@ -24,12 +24,6 @@ const united = new Airline({
   name: 'United Airline'
 })
 
-// console.log(`const Airline TypeOf: ${typeof Airline}`)
-// console.log(Airline)
-// console.log('----------------------------------------')
-// console.log(`const united TypeOf: ${typeof Airline}`)
-// console.log(united)
-
 // run the query
 const runAsync = async() => {
   try {
@@ -38,6 +32,7 @@ const runAsync = async() => {
   } catch (error) {
     throw error
   }
+
   process.exit(0)
 }
 
