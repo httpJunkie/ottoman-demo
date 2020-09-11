@@ -1,13 +1,11 @@
-require('dotenv').config()
-const { CB_USER, CB_PASS, BUCKET } = process.env
 const ottoman = require('ottoman')
 
 // create connection to database/bucket
 const connection = ottoman.connect({
   connectionString: 'couchbase://localhost',
-  bucketName: BUCKET,
-  username: CB_USER,
-  password: CB_PASS
+  bucketName: 'travel',
+  username: 'Administrator',
+  password: 'password'
 });
 
 // define validator
@@ -31,7 +29,7 @@ const Airline = connection.model('Airline', {
 // Creating an Airline with phone number that will validate
 // ex: 555-321-0123 not 1-555-321-0123
 const united = new Airline({
-  callsign: 'UNITED',
+  callsign: 'Couchbase',
   country: 'United States',
   name: 'United Airlines',
   phone: '800-490-2021'
@@ -50,4 +48,4 @@ const runAsync = async() => {
 }
 
 runAsync()
-.catch((e) => console.log(e))
+.catch((e) => console.log(e.message))

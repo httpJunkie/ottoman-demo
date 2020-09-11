@@ -1,7 +1,4 @@
-require('dotenv').config()
-// const { CB_USER, CB_PASS, BUCKET } = process.env
 const ottoman = require('ottoman')
-
 const { model, Schema } = require('ottoman');
 
 // create connection to database/bucket
@@ -17,15 +14,19 @@ const schema = new Schema({
   country: String,
   name: String
 })
+// update this scheme with phone and Link
 
 // create model representing our user
-const Airline = connection.model('Airline', schema, { collectionName: 'Airlines', scopeName: 'us'})
+const Airline = model('Airline', schema, { 
+  collectionName: 'Airlines', 
+  scopeName: 'us'
+})
 
 // Creating a use that matches the model
 const united = new Airline({
-  callsign: 'ORACLE',
+  callsign: 'Couchbase',
   country: 'United States',
-  name: 'Oracle Airlines'
+  name: 'Couchbase Airlines'
 })
 
 // run the query

@@ -1,24 +1,12 @@
-require('dotenv').config()
-const { CB_USER, CB_PASS, BUCKET } = process.env
 const ottoman = require('ottoman')
 
 // create connection to database/bucket
 const connection = ottoman.connect({
   connectionString: 'couchbase://localhost',
-  bucketName: BUCKET,
-  username: CB_USER,
-  password: CB_PASS
+  bucketName: 'travel',
+  username: 'Administrator',
+  password: 'password'
 });
-
-// define validator
-ottoman.addValidators({
-  phone: (value) => {
-    const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-    if(value && !value.match(phone)) {
-    throw new Error('Phone number invalid')
-    }
-  }
-})
 
 class LinkType extends ottoman.IOttomanType {
   constructor(name) {
@@ -51,15 +39,13 @@ const Airline = connection.model('Airline', {
   callsign: String,
   country: String,
   name: String,
-  phone: { type: String, validator: 'phone'},
   link: LinkType
 })
 
 const united = new Airline({
-  callsign: 'UNITED',
+  callsign: 'United',
   country: 'United States',
   name: 'United Airline',
-  phone: '555-321-0123',
   link: 'http://www.united.com'
 })
 
@@ -71,6 +57,18 @@ const runAsync = async() => {
   } catch (error) {
     throw error
   }
+
+  try {
+    // find an Airline by callsign
+    const filter = { callsign: 'United'}
+    const options = { consistency: ottoman.SearchConsistency.LOCAL }
+    const result = await Airline.findOne(filter, options)
+    console.log('Airline Retrieved: ', result)
+  } 
+  catch (error) { 
+    throw error 
+  }
+
   process.exit(0)
 }
 

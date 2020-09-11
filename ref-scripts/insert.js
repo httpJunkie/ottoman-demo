@@ -1,5 +1,3 @@
-require('dotenv').config()
-const { CB_USER, CB_PASS, BUCKET } = process.env
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman');
 
@@ -11,23 +9,31 @@ const connection = ottoman.connect({
   password: 'password'
 });
 
-// create a model of users
-const Airline = connection.model('Airline', schema, { collectionName: 'Airlines', scopeName: 'us', })
+const schema = new Schema({
+  callsign: String,
+  country: String,
+  name: String
+})
+// update this scheme with phone and Link
+
+// create model representing our user
+const Airline = model('Airline', schema, { 
+  collectionName: 'Airlines', 
+  scopeName: 'us'
+})
 
 // Creating a use that matches the model
 const united = new Airline({
-  callsign: 'UNITED',
+  callsign: 'Couchbase',
   country: 'United States',
-  name: 'United Airline'
+  name: 'Couchbase Airlines'
 })
 
 // run the query
 const runAsync = async() => {
   try {
-    const filter = { callsign: 'UNITED'}
-    const options = { consistency: ottoman.SearchConsistency.LOCAL }
-    const result = await Airline.find(filter, options)
-    console.log('Query Result: ', result)
+    await united.save()
+    console.log(`success: airline added`)
   } catch (error) {
     throw error
   }
@@ -39,3 +45,7 @@ ottoman.ensureIndexes()
     runAsync()
       .catch((e) => console.log(e))
   })
+
+
+// runAsync()
+//   .catch((e) => console.log(e))

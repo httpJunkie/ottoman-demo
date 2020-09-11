@@ -1,20 +1,25 @@
-require('dotenv').config()
-const { CB_USER, CB_PASS, BUCKET } = process.env
 const ottoman = require('ottoman')
+const { model, Schema } = require('ottoman');
 
 // create connection to database/bucket
 const connection = ottoman.connect({
   connectionString: 'couchbase://localhost',
-  bucketName: BUCKET,
-  username: CB_USER,
-  password: CB_PASS
+  bucketName: 'travel',
+  username: 'Administrator',
+  password: 'password'
 });
 
-// create a model of users
-const Airline = connection.model('Airline', {
+const schema = new Schema({
   callsign: String,
   country: String,
   name: String
+})
+// update this scheme with phone and Link
+
+// create model representing our user
+const Airline = model('Airline', schema, { 
+  collectionName: 'Airlines', 
+  scopeName: 'us'
 })
 
 // run the query
@@ -23,7 +28,7 @@ const runAsync = async() => {
   // Retrieving United Airlines
   try {
     // find an Airline by callsign
-    const filter = { callsign: 'UNITED'}
+    const filter = { callsign: 'Couchbase'}
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const result = await Airline.findOne(filter, options)
     console.log('Airline Retrieved: ', result)
@@ -36,7 +41,7 @@ const runAsync = async() => {
 
   try {
     // find an Airline by callsign
-    const filter = { callsign: 'UNITED'}
+    const filter = { callsign: 'Couchbase'}
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const updatedResult = await Airline.findOne(filter, options)
     console.log('Airline Updated and Retrieved: ', updatedResult)

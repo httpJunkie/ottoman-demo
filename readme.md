@@ -10,4 +10,11 @@
     
     curl -X GET -v -u Administrator:password http://127.0.0.1:8091/pools/default/buckets/travel/collections
 
+ ## Order to  walk through each file
 
+ - insert.js
+ - retrieve.js
+ - validator.js
+ - update.js
+ - queryBuilder.js
+ - custom-types.js
