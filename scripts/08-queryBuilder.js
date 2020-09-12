@@ -1,3 +1,6 @@
+
+/* Demonstrate Query Builder using Mixed Mode */
+
 const ottoman = require('ottoman')
 const { Query } = require('ottoman');
 
@@ -9,15 +12,18 @@ const connection = ottoman.connect({
   password: 'password'
 });
 
-// run the query
+// build and run the query
 const runAsync = async() => {
   try {
-    const select = [{ $field: 'name' }]
-    const query = new Query({}, 'default:`travel`')
-      .select(select).limit(5).build()
-      console.log(query)
+   const where =  { $and: [{ name: {$eq: 'name_val'}}, {country: { $isNotNull: true}}] };
+   const query = new Query(where, 'default:`travel`')
+      .select([{ $field: 'country' }])
+      .let([{ key: 'name_val', value: '\'Couchbase Airlines\''}])
+      .limit(10)
+      .build();
+      console.log("Query Generated : ",query);
       const result = await connection.query(query)
-      console.log(result.rows)
+      console.log("Query Result : " ,result.rows)
   } catch (error) {
     throw error
   }

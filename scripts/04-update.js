@@ -14,20 +14,18 @@ const schema = new Schema({
   country: String,
   name: String
 })
-// update this scheme with phone and Link
 
-// create model representing our user
-const Airline = model('Airline', schema, { 
-  collectionName: 'Airlines', 
+// create model representing our airline
+const Airline = model('Airline', schema, {
+  collectionName: 'Airlines',
   scopeName: 'us'
 })
 
 // run the query
 const runAsync = async() => {
 
-  // Retrieving United Airlines
+
   try {
-    // find an Airline by callsign
     const filter = { callsign: 'Couchbase'}
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const result = await Airline.findOne(filter, options)
@@ -35,8 +33,8 @@ const runAsync = async() => {
 
     // update the country using id of the result above
     await Airline.update({ country: 'United Kingdom' }, result.id)
-  } catch (error) { 
-    throw error 
+  } catch (error) {
+    throw error
   }
 
   try {
@@ -45,9 +43,9 @@ const runAsync = async() => {
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const updatedResult = await Airline.findOne(filter, options)
     console.log('Airline Updated and Retrieved: ', updatedResult)
-  } 
-  catch (error) { 
-    throw error 
+  }
+  catch (error) {
+    throw error
   }
 
   process.exit(0)

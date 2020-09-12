@@ -1,3 +1,5 @@
+/*Demonstrate data retrieval using refdoc Indexes*/
+
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman');
 
@@ -23,26 +25,18 @@ schema.index.findByName = {
 
 // create model representing our airline
 const Airline = model('Airline', schema, {
-  collectionName: 'Airlines',
-  scopeName: 'us'
-})
-
-// Creating a use that matches the model
-const united = new Airline({
-  callsign: 'Couchbase',
-  country: 'United States',
-  name: 'Couchbase Airlines'
+  collectionName: 'Airlines', scopeName: 'us'
 })
 
 // run the query
 const runAsync = async() => {
   try {
-    await united.save()
-    console.log(`success: airline added`)
+    const result = await Airline.findByName('Couchbase Airlines');
+    console.log('Query Result: ', result)
   } catch (error) {
     throw error
   }
-  //process.exit(0)
+  process.exit(0)
 }
 
 ottoman.ensureIndexes()
