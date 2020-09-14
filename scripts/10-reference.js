@@ -23,7 +23,7 @@ const Airline = model('Airline', airlineSchema, {
 })
 
 const routeSchema = new Schema({
-  source_apirport: String,
+  source_airport: String,
   destination_airport: String,
   airline: { type: String, ref: 'Airline' },
   stops: { type: Number, default: 0 }
@@ -51,7 +51,7 @@ const runAsync = async() => {
     console.log(`success: American Airlines added`)
 
     const route = new Route({
-      source_apirport : "LAX",
+      source_airport : "LAX",
       destination_airport : "DFW",
       airline: americanAirlines.id // assign id from the saved airline in the previous step
     })
@@ -66,7 +66,7 @@ const runAsync = async() => {
 
   try {
 
-    const filter = { source_apirport: 'LAX'}
+    const filter = { source_airport: 'LAX'}
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const laxRoute = await Route.findOne(filter,options)
 
