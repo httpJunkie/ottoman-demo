@@ -15,8 +15,8 @@ const schema = new Schema({
   name: String
 })
 
-// create a model of Airlines
-const Airline = model('Airline', schema, { 
+// create model representing our airline
+const Airline = model('Airline', schema, {
   collectionName: 'Airlines', scopeName: 'us'
 })
 

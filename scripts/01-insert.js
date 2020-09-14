@@ -14,11 +14,16 @@ const schema = new Schema({
   country: String,
   name: String
 })
-// update this scheme with phone and Link
 
-// create model representing our user
-const Airline = model('Airline', schema, { 
-  collectionName: 'Airlines', 
+//create refdoc index
+schema.index.findByName = {
+    by: 'name',
+    type: 'refdoc'
+};
+
+// create model representing our airline
+const Airline = model('Airline', schema, {
+  collectionName: 'Airlines',
   scopeName: 'us'
 })
 
@@ -37,7 +42,7 @@ const runAsync = async() => {
   } catch (error) {
     throw error
   }
-  process.exit(0)
+  //process.exit(0)
 }
 
 ottoman.ensureIndexes()
@@ -45,7 +50,3 @@ ottoman.ensureIndexes()
     runAsync()
       .catch((e) => console.log(e))
   })
-
-
-// runAsync()
-//   .catch((e) => console.log(e))

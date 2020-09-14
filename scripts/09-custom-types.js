@@ -1,4 +1,5 @@
 const ottoman = require('ottoman')
+const { model, Schema } = require('ottoman');
 
 // create connection to database/bucket
 const connection = ottoman.connect({
@@ -8,6 +9,7 @@ const connection = ottoman.connect({
   password: 'password'
 });
 
+// Step 1 : Define Custom Type extend from IOttomanType
 class LinkType extends ottoman.IOttomanType {
   constructor(name) {
     super(name, 'Link')
@@ -20,10 +22,6 @@ class LinkType extends ottoman.IOttomanType {
   }
 }
 
-const LinkTypeFactory = (name) => new LinkType(name)
-
-ottoman.registerType(LinkType.name, LinkTypeFactory)
-
 function isLink(value) {
   const regExp = new RegExp(
     /(^|\s)((https?:\/\/)?[\w-]+(\.[a-z-]+)+\.?(:\d+)?(\/\S*)?)/gi
@@ -31,15 +29,21 @@ function isLink(value) {
   return regExp.test(value)
 }
 
-module.exports = {
-  LinkType
-}
+// Step 2 Register Custom Type
+const LinkTypeFactory = (name) => new LinkType(name)
+ottoman.registerType(LinkType.name, LinkTypeFactory)
 
-const Airline = connection.model('Airline', {
+
+const schema = new Schema({
   callsign: String,
   country: String,
   name: String,
   link: LinkType
+})
+
+const Airline = model('Airline', schema, {
+  collectionName: 'Airlines',
+  scopeName: 'us'
 })
 
 const united = new Airline({
@@ -53,7 +57,7 @@ const united = new Airline({
 const runAsync = async() => {
   try {
     await united.save()
-    console.log(`Sucess: Airline ${united.name} (${united.callsign})`)
+    console.log('success: airline added')
   } catch (error) {
     throw error
   }
@@ -64,9 +68,9 @@ const runAsync = async() => {
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const result = await Airline.findOne(filter, options)
     console.log('Airline Retrieved: ', result)
-  } 
-  catch (error) { 
-    throw error 
+  }
+  catch (error) {
+    throw error
   }
 
   process.exit(0)
