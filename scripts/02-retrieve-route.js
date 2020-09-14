@@ -20,12 +20,24 @@ const Airline = model('Airline', schema, {
   collectionName: 'Airlines', scopeName: 'us'
 })
 
+const routeSchema = new Schema({
+  source_airport: String,
+  destination_airport: String,
+  airline: { type: String, ref: 'Airline' },
+  stops: { type: Number, default: 0 }
+})
+
+const Route = model('Route', routeSchema, {
+  collectionName: 'Routes',
+  scopeName: 'us'
+})
+
 // run the query
 const runAsync = async() => {
   try {
-    const filter = { callsign: 'AA'}
-    const options = { consistency: ottoman.SearchConsistency.LOCAL }
-    const result = await Airline.find(filter, options)
+    const filter = { destination_airport: 'DFW'}
+    const options = { consistency: ottoman.SearchConsistency.LOCAL,  limit:1,  populate:'airline' }
+    const result = await Route.find(filter, options)
     console.log('Query Result: ', result)
   } catch (error) {
     throw error
