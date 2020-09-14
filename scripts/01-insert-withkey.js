@@ -10,14 +10,19 @@ const connection = ottoman.connect({
 });
 
 const schema = new Schema({
+  airlineId:String,
   callsign: String,
   country: String,
   name: String,
   modifiedBy: String
 })
 
-schema.pre('save', function(document) {
-  document.modifiedBy = 'arun vijayraghvan'
+schema.pre('save', async (document) => {
+  document.modifiedBy = await (async () => {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve('Arun Vijayraghvan'), 1000)
+    })
+  })()
 });
 
 //create refdoc index
@@ -29,14 +34,16 @@ schema.index.findByName = {
 // create model representing our airline
 const Airline = model('Airline', schema, {
   collectionName: 'Airlines',
-  scopeName: 'us'
+  scopeName: 'us',
+  idKey:'airlineId'
 })
 
 // Creating a use that matches the model
 const united = new Airline({
   callsign: 'Emirates',
   country: 'United States',
-  name: 'Emirates Airlines'
+  name: 'Emirates Airlines',
+  airlineId:'Emirates202009'
 })
 
 // run the query
@@ -47,7 +54,7 @@ const runAsync = async() => {
   } catch (error) {
     throw error
   }
-  //process.exit(0)
+  process.exit(0)
 }
 
 ottoman.ensureIndexes()

@@ -12,8 +12,18 @@ const connection = ottoman.connect({
 const schema = new Schema({
   callsign: String,
   country: String,
-  name: String
+  name: String,
+  modifiedBy:String
 })
+
+schema.pre('update', function(document) {
+  document.modifiedBy = 'Eric Bishard'
+});
+
+schema.pre('save', function(document) {
+  document.modifiedBy = 'arun vijayraghvan'
+});
+
 
 // create model representing our airline
 const Airline = model('Airline', schema, {
