@@ -1,4 +1,5 @@
 const ottoman = require('ottoman')
+const { model, Schema } = require('ottoman');
 
 // create connection to database/bucket
 ottoman.connect({
@@ -8,7 +9,23 @@ ottoman.connect({
   password: 'password'
 });
 
-const Airline = require('./airlineModel')
+const schema = new Schema({
+  callsign: String,
+  country: String,
+  name: String
+})
+
+//create refdoc index
+schema.index.findByName = {
+  by: 'name',
+  type: 'refdoc'
+};
+
+// create model representing our airline
+const Airline = model('Airline', schema, {
+  collectionName: 'Airlines',
+  scopeName: 'us'
+})
 
 // Creating a use that matches the model
 const united = new Airline({
