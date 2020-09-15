@@ -1,3 +1,5 @@
+/* Demonstrate data retrieval using filter and <Model>.find() */
+
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman');
 

@@ -1,4 +1,4 @@
-/*Demonstrate data retrieval using refdoc Indexes*/
+/* Demonstrate data retrieval using refdoc Indexes */
 
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman');
