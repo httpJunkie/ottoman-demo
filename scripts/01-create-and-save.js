@@ -9,23 +9,24 @@ ottoman.connect({
   password: 'password'
 });
 
+
 const schema = new Schema({
   callsign: String,
   country: String,
   name: String
 })
 
-//create refdoc index
+// Create refdoc index (faster for retrieve doc with id)
+// since name is unique we want to create a ref index on our name
+// this is immediately consistent by creating a referntial doc in db in addition to your doc. 
+// For lookup purposes by key
 schema.index.findByName = {
   by: 'name',
   type: 'refdoc'
 };
 
 // create model representing our airline
-const Airline = model('Airline', schema, {
-  collectionName: 'Airlines',
-  scopeName: 'us'
-})
+const Airline = model('Airline', schema)
 
 // Creating a use that matches the model
 const united = new Airline({
@@ -38,15 +39,17 @@ const united = new Airline({
 const runAsync = async() => {
   try {
     await united.save()
-    console.log(`success: airline added`)
   } catch (error) {
     throw error
   }
-  process.exit(0)
 }
 
 ottoman.ensureIndexes()
   .then(() => {
     runAsync()
-      .catch((e) => console.log(e))
+      .then(() => {
+        console.log(`success: airline added`)
+        process.exit(0)}
+      )
+      .catch((error) => console.log(error))
   })

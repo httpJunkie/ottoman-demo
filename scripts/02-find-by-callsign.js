@@ -4,13 +4,15 @@ const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman');
 
 // create connection to database/bucket
-const connection = ottoman.connect({
+ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
 });
 
+// to retrieve doc by field other than id
+// if no ref index, we do a full scan without using indexes which is expensive
 const schema = new Schema({
   callsign: String,
   country: String,
@@ -18,25 +20,26 @@ const schema = new Schema({
 })
 
 // create model representing our airline
-const Airline = model('Airline', schema, {
-  collectionName: 'Airlines', scopeName: 'us'
-})
+const Airline = model('Airline', schema)
 
 // run the query
-const runAsync = async() => {
+const findByCallsign = async() => {
   try {
     const filter = { callsign: 'Couchbase'}
+    // global will wait for all data from multiple nodes to catch up
+    // local will only worry about this node being consistent
+    // we are not worried about global consistency here
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
-    const result = await Airline.find(filter, options)
-    console.log('Query Result: ', result)
+    return await Airline.find(filter, options)
   } catch (error) {
     throw error
   }
-  process.exit(0)
 }
 
-ottoman.ensureIndexes()
-  .then(() => {
-    runAsync()
-      .catch((e) => console.log(e))
+
+findByCallsign()
+  .then((result) => {
+    console.log('Query Result: ', result)
+    process.exit(0)
   })
+  .catch((error) => console.log(error))

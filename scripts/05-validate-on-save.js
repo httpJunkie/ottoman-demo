@@ -1,6 +1,7 @@
 const ottoman = require('ottoman')
+const { Schema } = require('ottoman')
+const chalk = require("chalk");
 
-// create connection to database/bucket
 const connection = ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
@@ -8,44 +9,41 @@ const connection = ottoman.connect({
   password: 'password'
 });
 
-// define validator
 ottoman.addValidators({
   phone: (value) => {
     const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
     if(value && !value.match(phone)) {
-      throw new Error('Phone number invalid')
+      throw new Error(`Phone ${chalk.red.bold(value)} is invalid`)
     }
   }
 })
 
-// create model representing our user
-const Airline = connection.model('Airline', {
+const schema = new Schema({
   callsign: String,
   country: String,
   name: String,
   phone: { type: String, validator: 'phone'}
 })
 
-// Creating an Airline with phone number that will validate
-// ex: 555-321-0123 not 1-555-321-0123
-const united = new Airline({
+const Airline = connection.model('Airline', schema)
+
+const model = new Airline({
   callsign: 'Couchbase',
   country: 'United States',
   name: 'United Airlines',
-  phone: '800-490-2021'
+  phone: 'X-Z32-800-490-2021'
 })
 
-// run the query
-const runAsync = async() => {
+const saveDocument = async() => {
   try {
-    await united.save()
-    console.log(`success: airline added`)
+    await model.save()
   } catch (error) {
     throw error
   }
-
-  process.exit(0)
 }
 
-runAsync()
-.catch((e) => console.log(e.message))
+saveDocument()
+  .catch((error) => {
+    console.log(error.message)
+    process.exit(0)
+  })

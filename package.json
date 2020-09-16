@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^4.1.0",
     "couchbase": "^3.0.4",
     "dotenv": "^8.2.0",
     "ottoman": "^2.0.0-alpha.6"
