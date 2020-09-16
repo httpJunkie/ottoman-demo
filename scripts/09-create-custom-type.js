@@ -2,7 +2,7 @@ const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman');
 
 // create connection to database/bucket
-const connection = ottoman.connect({
+ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
   username: 'Administrator',
@@ -10,9 +10,13 @@ const connection = ottoman.connect({
 });
 
 // Step 1 : Define Custom Type extend from IOttomanType
+// define, register and use
+// you would extend IOttoman type instead of using a validator to provide 
+// your application with custom data type not simply to provide validation
+// a validator is just one constraint for this type but it could also be some other costraint
 class LinkType extends ottoman.IOttomanType {
   constructor(name) {
-    super(name, 'Link')
+    super(name, '')
   }
   cast(value) {
     if(!isLink(String(value))) {
@@ -30,9 +34,8 @@ function isLink(value) {
 }
 
 // Step 2 Register Custom Type
-const LinkTypeFactory = (name) => new LinkType(name)
+var LinkTypeFactory = (name) => new LinkType(name)
 ottoman.registerType(LinkType.name, LinkTypeFactory)
-
 
 const schema = new Schema({
   callsign: String,
@@ -41,10 +44,7 @@ const schema = new Schema({
   link: LinkType
 })
 
-const Airline = model('Airline', schema, {
-  collectionName: 'Airlines',
-  scopeName: 'us'
-})
+const Airline = model('Airline', schema)
 
 const united = new Airline({
   callsign: 'United',
@@ -54,17 +54,18 @@ const united = new Airline({
 })
 
 // run the query
-const runAsync = async() => {
+const saveAirline = async() => {
   try {
     await united.save()
     console.log('success: airline added')
   } catch (error) {
     throw error
   }
+}
 
+const findAirline = async() => {
   try {
-    // find an Airline by callsign
-    const filter = { callsign: 'United'}
+    const filter = { callsign: "United"}
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const result = await Airline.findOne(filter, options)
     console.log('Airline Retrieved: ', result)
@@ -72,12 +73,11 @@ const runAsync = async() => {
   catch (error) {
     throw error
   }
-
-  process.exit(0)
 }
 
-ottoman.ensureIndexes()
+saveAirline()
   .then(() => {
-    runAsync()
-      .catch((e) => console.log(e))
+    findAirline()
+      .then(() => process.exit(0))
   })
+  .catch((error) => console.log(error))
