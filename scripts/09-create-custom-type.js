@@ -1,5 +1,5 @@
 const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman');
+const { model, Schema } = require('ottoman')
 
 // create connection to database/bucket
 ottoman.connect({
@@ -7,7 +7,7 @@ ottoman.connect({
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
-});
+})
 
 // Step 1 : Define Custom Type extend from IOttomanType
 // define, register and use

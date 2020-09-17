@@ -7,7 +7,7 @@ ottoman.connect({
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
-});
+})
 
 const schema = new Schema({
   callsign: String,

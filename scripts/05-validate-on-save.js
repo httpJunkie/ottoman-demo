@@ -1,17 +1,17 @@
 const ottoman = require('ottoman')
 const { Schema } = require('ottoman')
-const chalk = require("chalk");
+const chalk = require("chalk")
 
 const connection = ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
-});
+})
 
 ottoman.addValidators({
   phone: (value) => {
-    const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
     if(value && !value.match(phone)) {
       throw new Error(`Phone ${chalk.red.bold(value)} is invalid`)
     }

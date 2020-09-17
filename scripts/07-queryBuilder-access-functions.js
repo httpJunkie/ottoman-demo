@@ -16,7 +16,7 @@ const connection = ottoman.connect({
 // build and run the query
 const generateQuery = async() => {
   try {
-   const query = new Query({}, 'default:`travel`')
+    const query = new Query({}, 'default:`travel`')
       .select([{ $field: 'name' }, { $field: 'country'}])
       .let([{ key: 'name_val', value: '\'Couchbase Airlines\''}])
       .where({ $and: [{ name: {$eq: 'name_val'}}, {country: { $isNotNull: true}}] })

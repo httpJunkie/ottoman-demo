@@ -1,5 +1,5 @@
 const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman');
+const { model, Schema } = require('ottoman')
 
 // create connection to database/bucket
 ottoman.connect({
@@ -7,8 +7,7 @@ ottoman.connect({
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
-});
-
+})
 
 const schema = new Schema({
   callsign: String,
@@ -23,7 +22,7 @@ const schema = new Schema({
 schema.index.findByName = {
   by: 'name',
   type: 'refdoc'
-};
+}
 
 // create model representing our airline
 const Airline = model('Airline', schema)

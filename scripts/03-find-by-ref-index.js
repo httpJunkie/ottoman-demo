@@ -1,7 +1,7 @@
 /* Demonstrate data retrieval using refdoc Indexes */
 
 const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman');
+const { model, Schema } = require('ottoman')
 
 // create connection to database/bucket
 const connection = ottoman.connect({
@@ -9,7 +9,7 @@ const connection = ottoman.connect({
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
-});
+})
 
 const schema = new Schema({
   callsign: String,
@@ -23,7 +23,7 @@ const schema = new Schema({
 schema.index.findByName = {
   by: 'name',
   type: 'refdoc'
-};
+}
 
 // create model representing our airline
 const Airline = model('Airline', schema)
@@ -31,7 +31,7 @@ const Airline = model('Airline', schema)
 // run the query
 const findByRefIndex = async() => {
   try {
-    return await Airline.findByName('Couchbase Airlines');
+    return await Airline.findByName('Couchbase Airlines')
   } catch (error) {
     throw error
   }

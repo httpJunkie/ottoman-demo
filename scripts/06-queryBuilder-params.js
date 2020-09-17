@@ -20,8 +20,8 @@ const generateQuery = async() => {
       let : [{ key: 'name_val', value: '\'Couchbase Airlines\''}],
       where: { $and: [{ name: {$eq: 'name_val'}}, {country: { $isNotNull: true}}] },
       limit: 10
-    };
-    const query = new Query(params, 'default:`travel`').build();
+    }
+    const query = new Query(params, 'default:`travel`').build()
     console.log("Query Generated : ", chalk.blue(query))
     return query
   } catch (error) {

@@ -1,7 +1,7 @@
 /* Demonstrate data retrieval using filter and <Model>.find() */
 
 const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman');
+const { model, Schema } = require('ottoman')
 
 // create connection to database/bucket
 ottoman.connect({
@@ -9,7 +9,7 @@ ottoman.connect({
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
-});
+})
 
 // to retrieve doc by field other than id
 // if no ref index, we do a full scan without using indexes which is expensive
