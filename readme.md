@@ -1,4 +1,17 @@
-# Add collections and scope manually
+# Ottoman JS V2 Connect Demo
+
+- On Slides: Arun Vijay ([Twitter](https://twitter.com/vijayragahvan),[Linkedin](https://www.linkedin.com/in/avijayraghavan))
+- On Code: Eric Bishard ([Twitter](twitter.com/httpjunkie),[Linkedin](https://www.linkedin.com/in/eric-b))
+
+## Talk/Demo Resources
+
+- [Ottoman V2 Docs](https://v2.ottomanjs.com)
+- [Documentation GA](https://ottomanjs.com)
+- [Source Code](https://github.com/couchbaselabs/node-ottoman)
+- [Sample Project](https://github.com/couchbaselabs/try-ottoman)
+- [Ottoman Connect Demo](https://github.com/httpjunkie/ottoman-demo)
+
+## Add collections and scope manually
 
     docker exec -it cbs bash
 
