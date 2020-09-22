@@ -1,9 +1,8 @@
-/* Demonstrate data retrieval using filter and <Model>.find() */
+/* Demonstrate data retrieval with <Model>.find() using a filter by callsign*/
 
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman')
 
-// create connection to database/bucket
 ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
@@ -11,16 +10,16 @@ ottoman.connect({
   password: 'password'
 })
 
-// to retrieve doc by field other than id
-// if no ref index, we do a full scan without using indexes which is expensive
-const schema = new Schema({
+/* To retrieve doc by field other than id, if no ref index is used,
+   we do a full scan without using indexes which is expensive */
+const airlineSchema = new Schema({
   callsign: String,
   country: String,
   name: String
 })
 
 // create model representing our airline
-const Airline = model('Airline', schema)
+const Airline = model('Airline', airlineSchema)
 
 // run the query
 const findByCallsign = async() => {
