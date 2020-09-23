@@ -1,7 +1,7 @@
+/* Show referential integrity (relationship constraint) */ 
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman')
 
-// create connection to database/bucket
 ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
@@ -15,7 +15,6 @@ const airlineSchema = new Schema({
   name: String
 })
 
-// create model representing our airline
 const Airline = model('Airline', airlineSchema)
 
 const routeSchema = new Schema({
@@ -27,18 +26,16 @@ const routeSchema = new Schema({
 
 const Route = model('Route', routeSchema)
 
-// create an airline
 const americanAirlines = new Airline({
   callsign: 'AA',
   country: 'United States',
   name: 'American Airlines'
 })
 
-// run the query
 const createAndSaveAirline = async() => {
   try {
     await americanAirlines.save()
-    console.log(`success: American Airlines added`)
+    console.log(`success: ${americanAirlines.name} added`)
   } catch (error) {
     throw error
   }
@@ -47,13 +44,19 @@ const createAndSaveAirline = async() => {
 const createAndSaveRoute = async() => {
   try {
     const route = new Route({
-      source_airport : "LAX",
-      destination_airport : "DFW",
-      airline: americanAirlines // assign id from the saved airline in the previous step
+      source_airport : 'LAX',
+      destination_airport : 'DFW',
+      airline: americanAirlines // assign id from saved airline in previous step
     })
 
-    await route.save()
+    /* Populated paths are no longer set to their original id, their value is 
+      replaced with the Ottoman document returned from the database by performing 
+      a separate query before returning the results.
 
+      NOTE: We can check to see if a model has been populated or specify the depth
+      in which to populate children, or depopulate. See docs! */
+
+    await route.save()
     console.log('success: Route between LAX and DFW for American Airlines added')
 
   } catch (error) {
@@ -67,10 +70,9 @@ const findRoutePopulateAirline = async() => {
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const laxRoute = await Route.findOne(filter,options)
 
-    // ottoman magic shortcut, normally you would have to find these 
-    // documents seperately and jon them together
+    // Ottoman shortcut, normally you would have to find these 
+    // docs seperately and join them together increasing boilerplate!
     await laxRoute._populate('airline')
-
     console.log('Route Retrieved : ', laxRoute)
   }
   catch (error) {

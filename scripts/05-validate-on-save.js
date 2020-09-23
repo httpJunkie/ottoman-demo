@@ -1,6 +1,7 @@
+/* Validate a field on Model.save() using Ottoman addValidators()  */
 const ottoman = require('ottoman')
 const { Schema } = require('ottoman')
-const chalk = require("chalk")
+const chalk = require('chalk')
 
 const connection = ottoman.connect({
   connectionString: 'couchbase://localhost',
@@ -18,16 +19,16 @@ ottoman.addValidators({
   }
 })
 
-const schema = new Schema({
+const airlineSchema = new Schema({
   callsign: String,
   country: String,
   name: String,
   phone: { type: String, validator: 'phone'}
 })
 
-const Airline = connection.model('Airline', schema)
+const Airline = connection.model('Airline', airlineSchema)
 
-const model = new Airline({
+const cbAirlines = new Airline({
   callsign: 'Couchbase',
   country: 'United States',
   name: 'United Airlines',
@@ -36,7 +37,7 @@ const model = new Airline({
 
 const saveDocument = async() => {
   try {
-    await model.save()
+    await cbAirlines.save()
   } catch (error) {
     throw error
   }

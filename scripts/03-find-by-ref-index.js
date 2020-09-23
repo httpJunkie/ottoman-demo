@@ -1,37 +1,37 @@
 /* Demonstrate data retrieval using refdoc Indexes */
-
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman')
 
-// create connection to database/bucket
-const connection = ottoman.connect({
+ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
   username: 'Administrator',
   password: 'password'
 })
 
-const schema = new Schema({
+const airlineSchema = new Schema({
   callsign: String,
   country: String,
   name: String
 })
 
-// create refdoc index
-// instructiong our model to use a ref index by name (document field: "name")
-// remember *ref doc indexes are immediately consistent
-schema.index.findByName = {
+/* Refdoc indexes are more performant but less flexible. 
+  Allow only a single document to occupy a particular value 
+  and do a direct key-value lookup with a referential document 
+  to identify that matching document.
+
+  If you need to do key lookups, this is the way to go. */
+airlineSchema.index.findByName = {
   by: 'name',
   type: 'refdoc'
 }
 
-// create model representing our airline
-const Airline = model('Airline', schema)
+const Airline = model('Airline', airlineSchema)
 
-// run the query
 const findByRefIndex = async() => {
   try {
-    return await Airline.findByName('Couchbase Airlines')
+    const result = await Airline.findByName('Couchbase Airlines')
+    return result
   } catch (error) {
     throw error
   }

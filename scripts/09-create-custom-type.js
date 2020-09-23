@@ -1,7 +1,7 @@
+/* Create a custom type and constraints */
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman')
 
-// create connection to database/bucket
 ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
@@ -9,14 +9,12 @@ ottoman.connect({
   password: 'password'
 })
 
-// Step 1 : Define Custom Type extend from IOttomanType
-// define, register and use
-// you would extend IOttoman type instead of using a validator to provide 
-// your application with custom data type not simply to provide validation
-// a validator is just one constraint for this type but it could also be some other costraint
+// Steps to createcustom type: 1. Define 2. Register 3. Amd use it!
+
+// Step 1 : Define Custom Type extending IOttomanType
 class LinkType extends ottoman.IOttomanType {
   constructor(name) {
-    super(name, '')
+    super(name, 'Link')
   }
   cast(value) {
     if(!isLink(String(value))) {
@@ -25,6 +23,10 @@ class LinkType extends ottoman.IOttomanType {
     return String(value)
   }
 }
+
+/* NOTE: You would extend IOttoman type instead of using a validator to provide 
+  your appl with a custom data type, not simply to provide validation.
+  A validator is just a constraint for this type */
 
 function isLink(value) {
   const regExp = new RegExp(
@@ -37,26 +39,26 @@ function isLink(value) {
 var LinkTypeFactory = (name) => new LinkType(name)
 ottoman.registerType(LinkType.name, LinkTypeFactory)
 
-const schema = new Schema({
+// Step 3 Use it
+const airlineSchema = new Schema({
   callsign: String,
   country: String,
   name: String,
   link: LinkType
 })
 
-const Airline = model('Airline', schema)
+const Airline = model('Airline', airlineSchema)
 
-const united = new Airline({
+const unitedAirlines = new Airline({
   callsign: 'United',
   country: 'United States',
   name: 'United Airline',
   link: 'http://www.united.com'
 })
 
-// run the query
 const saveAirline = async() => {
   try {
-    await united.save()
+    await unitedAirlines.save()
     console.log('success: airline added')
   } catch (error) {
     throw error
@@ -65,7 +67,7 @@ const saveAirline = async() => {
 
 const findAirline = async() => {
   try {
-    const filter = { callsign: "United"}
+    const filter = { callsign: 'United'}
     const options = { consistency: ottoman.SearchConsistency.LOCAL }
     const result = await Airline.findOne(filter, options)
     console.log('Airline Retrieved: ', result)
