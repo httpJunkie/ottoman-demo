@@ -9,7 +9,7 @@ ottoman.connect({
   password: 'password'
 })
 
-// Steps to createcustom type: 1. Define 2. Register 3. Amd use it!
+// Steps to createcustom type: 1. Define 2. Register 3. And use it!
 
 // Step 1 : Define Custom Type extending IOttomanType
 class LinkType extends ottoman.IOttomanType {
