@@ -1,7 +1,7 @@
 # Ottoman JS V2 Connect Demo
 
-- On Slides: Arun Vijay ([Twitter](https://twitter.com/vijayragahvan),[Linkedin](https://www.linkedin.com/in/avijayraghavan))
-- On Code: Eric Bishard ([Twitter](twitter.com/httpjunkie),[Linkedin](https://www.linkedin.com/in/eric-b))
+- On Slides: Arun Vijay ([Twitter](https://twitter.com/vijayragahvan), [Linkedin](https://www.linkedin.com/in/avijayraghavan))
+- On Code: Eric Bishard ([Twitter](twitter.com/httpjunkie), [Linkedin](https://www.linkedin.com/in/eric-b))
 
 ## Talk/Demo Resources
 
