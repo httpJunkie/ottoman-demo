@@ -1,4 +1,3 @@
-
 /* Demonstrate Query Builder using Access Functions*/
 
 const ottoman = require('ottoman')

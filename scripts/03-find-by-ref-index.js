@@ -17,7 +17,7 @@ const schema = new Schema({
   name: String
 })
 
-//create refdoc index
+// create refdoc index
 // instructiong our model to use a ref index by name (document field: "name")
 // remember *ref doc indexes are immediately consistent
 schema.index.findByName = {

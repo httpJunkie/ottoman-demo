@@ -1,4 +1,3 @@
-
 /* Demonstrate Query Builder using Mixed Mode */
 
 const ottoman = require('ottoman')
@@ -16,8 +15,8 @@ const connection = ottoman.connect({
 // build and run the query
 const generateQuery = async() => {
   try {
-   const where =  { $and: [{ name: {$eq: 'name_val'}}, {country: { $isNotNull: true}}] }
-   const query = new Query({where: where}, 'default:`travel`')
+    const where =  { $and: [{ name: {$eq: 'name_val'}}, {country: { $isNotNull: true}}] }
+    const query = new Query({where: where}, 'default:`travel`')
       .select([{ $field: 'name' }, { $field: 'country'}])
       .let([{ key: 'name_val', value: '\'Couchbase Airlines\''}])
       .limit(10)
