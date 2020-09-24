@@ -2,6 +2,7 @@
   of data with ottoman.save() */
 const ottoman = require('ottoman')
 const { model, Schema } = require('ottoman')
+const chalk = require('chalk')
 
 ottoman.connect({
   connectionString: 'couchbase://localhost',
@@ -17,6 +18,21 @@ const airlineSchema = new Schema({
   name: String
 })
 
+// Plugins and Hooks are middleware, think lifecycle hooks!
+// They must be created before the Model instance
+
+const pluginLog = (airlineSchema) => {
+  airlineSchema.pre('save', (doc) => console.log(
+    `Saving Document: ${chalk.green.bold(doc.name)}`
+  ))
+
+  airlineSchema.post('save', (doc) => 
+    console.log(`Document: ${chalk.green.bold(doc.id)} has been saved`)
+  )
+};
+
+airlineSchema.plugin(pluginLog)
+
 /* Create refdoc index (faster for retrieving docs with id)
   since name is unique we want to create a ref index on our name
   this is immediately consistent by creating a referential doc in db 
@@ -26,9 +42,10 @@ airlineSchema.index.findByName = {
   type: 'refdoc'
 }
 
+// Compile our model using our schema
 const Airline = model('Airline', airlineSchema)
 
-// Create an Ariline using our Airline model
+// Constructing our document
 const cbAirlines = new Airline({
   callsign: 'Couchbase',
   country: 'United States',
@@ -38,6 +55,7 @@ const cbAirlines = new Airline({
 // Persist the Couchbase Airlines document to Couchbase Server
 const saveDocument = async() => {
   try {
+    // pre and post hooks will run
     await cbAirlines.save()
   } catch (error) {
     throw error
@@ -49,10 +67,7 @@ ottoman.ensureIndexes()
   // Next, let's save our document and print a success message 
   .then(async() => {
     saveDocument()
-      .then(() => {
-        console.log(`success: airline added`)
-        process.exit(0)}
-      )
+      .then(() => process.exit(0))
       .catch((error) => console.log(error))
   })
   

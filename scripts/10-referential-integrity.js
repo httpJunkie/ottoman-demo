@@ -46,7 +46,7 @@ const createAndSaveRoute = async() => {
     const route = new Route({
       source_airport : 'LAX',
       destination_airport : 'DFW',
-      airline: americanAirlines // assign id from saved airline in previous step
+      airline: americanAirlines // Saving refs: assign id from airline
     })
 
     /* Populated paths are no longer set to their original id, their value is 
