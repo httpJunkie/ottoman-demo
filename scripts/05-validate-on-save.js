@@ -29,7 +29,7 @@ const airlineSchema = new Schema({
 const Airline = connection.model('Airline', airlineSchema)
 
 const cbAirlines = new Airline({
-  callsign: 'Couchbase',
+  callsign: 'UA',
   country: 'United States',
   name: 'United Airlines',
   phone: 'X-Z32-800-490-2021'

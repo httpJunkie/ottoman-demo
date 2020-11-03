@@ -17,7 +17,7 @@ const generateQuery = async() => {
       { country: { $isNotNull: true }}
     ] }
     // pass in our query as a condition expression
-    const query = new Query({ where: where }, 'default:`travel`')
+    const query = new Query({ where }, 'default:`travel`')
       .select([
         { $field: 'name' }, 
         { $field: 'country' }
