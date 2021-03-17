@@ -1,7 +1,7 @@
 /* Demonstrate data retrieval with <Model>.find() 
   using a filter by callsign */
-const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman')
+const { Ottoman, model, Schema, SearchConsistency } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 
 ottoman.connect({
   connectionString: 'couchbase://localhost',
@@ -23,7 +23,7 @@ const Airline = model('Airline', airlineSchema)
 const findByCallsign = async() => {
   try {
     const filter = { callsign: 'Couchbase'}
-    const options = { consistency: ottoman.SearchConsistency.LOCAL }
+    const options = { consistency: SearchConsistency.LOCAL }
     const result = await Airline.find(filter, options)
     return result.rows
   } catch (error) {

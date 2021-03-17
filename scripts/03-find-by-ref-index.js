@@ -1,6 +1,6 @@
 /* Demonstrate data retrieval using refdoc Indexes */
-const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman')
+const { Ottoman, model, Schema } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 
 ottoman.connect({
   connectionString: 'couchbase://localhost',

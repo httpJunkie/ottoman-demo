@@ -1,33 +1,29 @@
 /* Demonstrate Query Builder using Access Functions */
-const ottoman = require('ottoman')
-const { Query } = require('ottoman')
-const chalk = require('chalk')
+const { Ottoman, Query } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 
-const connection = ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
+ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+});
+
 
 const generateQuery = async() => {
   try {
-    const query = new Query({}, 'default:`travel`')
+    const query = new Query({}, '`travel`')
       .select([
         { $field: 'name' }, 
         { $field: 'country'}
       ])
-      .let([{ 
-        key: 'name_val', 
-        value: '\'Couchbase Airlines\''
-      }])
       .where({ $and: [
-        { name: {$eq: 'name_val'}}, 
-        { country: { $isNotNull: true } }
+        { country: {$eq: 'United States'}},
+        { _type: {$eq: 'Airline'}}
       ]})
       .limit(10)
       .build()
-      console.log('Query Generated: ', chalk.blue(query))
+      console.log('Query Generated: ', query)
       return query
   } catch (error) {
     throw error
@@ -36,8 +32,8 @@ const generateQuery = async() => {
 
 const executeQuery = async(query) => {
   try {
-    const result = await connection.query(query)
-    console.log('Query Result: ' , result.rows)
+    const result = await ottoman.query(query)
+    console.log('Query Result: ' , result)
   } catch (error) {
     throw error
   }
