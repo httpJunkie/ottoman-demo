@@ -1,6 +1,6 @@
 /* Find airline and update using Model.findOne() & Model.update()  */
-const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman')
+const { Ottoman, model, Schema, SearchConsistency } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 
 ottoman.connect({
   connectionString: 'couchbase://localhost',
@@ -20,7 +20,7 @@ const Airline = model('Airline', airlineSchema)
 const findAirline = async() => {
   try {
     const filter = { callsign: 'Couchbase'}
-    const options = { consistency: ottoman.SearchConsistency.LOCAL }
+    const options = { consistency: SearchConsistency.LOCAL }
     const result = await Airline.findOne(filter, options)
     console.log(`Airline found: `)
     console.log(result)
@@ -33,7 +33,7 @@ const findAirline = async() => {
 const updateAirline = async(airline) => {
   try {
     // Update the country using the id from the result above
-    await Airline.update({ country: 'United Kingdom' }, airline.id)
+    await Airline.updateById(airline.id, { country: 'United Kingdom' })
     console.log('Airline update success')
   }
   catch (error) {

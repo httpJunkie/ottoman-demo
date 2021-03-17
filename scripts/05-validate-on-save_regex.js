@@ -1,7 +1,7 @@
 /* Validate a field on Model.save() using Ottoman addValidators()  */
-const { Ottoman, Schema, addValidators } = require('ottoman')
+const { Ottoman, Schema } = require('ottoman')
 const ottoman = new Ottoman({collectionName: '_default'});
-const chalk = require('chalk')
+
 ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel',
@@ -9,20 +9,12 @@ ottoman.connect({
   password: 'password'
 })
 
-addValidators({
-  phone: (value) => {
-    const phone = /^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$/
-    if(value && !value.match(phone)) {
-      throw new Error(`Phone ${chalk.red.bold(value)} is invalid`)
-    }
-  }
-})
-
-const airlineSchema = new Schema({
-  callsign: String,
-  country: String,
+const regx = /^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$/
+const airlineSchema = new Schema({ 
+  callsign: String, 
+  country: String, 
   name: String,
-  phone: { type: String, validator: 'phone'}
+  phone: { type: String, validator: {regexp: regx, message: 'phone invalid'}}
 })
 
 const Airline = ottoman.model('Airline', airlineSchema)

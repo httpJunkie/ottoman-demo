@@ -1,14 +1,14 @@
 /* Demonstrate Query Builder using Parameters */
-const ottoman = require('ottoman')
-const { Query } = require('ottoman')
-const chalk = require('chalk')
+// const ottoman = require('ottoman')
+const { Ottoman, Query} = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 
-const connection = ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
+ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+});
 
 const generateQuery = async() => {
   try {
@@ -17,18 +17,14 @@ const generateQuery = async() => {
         { $field: 'name' }, 
         { $field: 'country'}
       ],
-      let : [{ 
-        key: 'name_val', 
-        value: '\'Couchbase Airlines\''
-      }],
       where: { $and: [
-        { name: {$eq: 'name_val'}}, 
-        {country: { $isNotNull: true}}
+        { country: {$eq: 'United States'}},
+        { _type: {$eq: 'Airline'}}
       ] },
       limit: 10
     }
-    const query = new Query(params, 'default:`travel`').build()
-    console.log('Query Generated: ', chalk.blue(query))
+    const query = new Query(params, '`travel`').build()
+    console.log('Query Generated: ', query)
     return query
   } catch (error) {
     throw error
@@ -37,16 +33,16 @@ const generateQuery = async() => {
 
 const executeQuery = async(query) => {
   try {
-    const result = await connection.query(query)
-    console.log('Query Result: ' , result.rows)
+    const result = await ottoman.query(query)
+    console.log('Query Result: ' , result)
   } catch (error) {
     throw error
   }
 }
 
 generateQuery()
-  .then((query) => {
-    executeQuery(query)
+  .then((result) => {
+    executeQuery(result)
       .then(() => process.exit(0))
   })
   .catch((error) => console.log(error))

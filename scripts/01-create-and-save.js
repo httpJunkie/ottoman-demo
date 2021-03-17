@@ -1,7 +1,7 @@
 /* Demonstrate model and schema creation and persistence 
   of data with ottoman.save() */
-const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman')
+const { Ottoman, model, Schema } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 const chalk = require('chalk')
 
 ottoman.connect({

@@ -1,24 +1,24 @@
 /* Create a custom type and constraints */
-const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman')
+const { Ottoman, Schema, IOttomanType, ValidationError, registerType } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'});
 
 ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+});
 
 // Steps to createcustom type: 1. Define 2. Register 3. And use it!
 
 // Step 1 : Define Custom Type extending IOttomanType
-class LinkType extends ottoman.IOttomanType {
+class LinkType extends IOttomanType {
   constructor(name) {
     super(name, 'Link')
   }
   cast(value) {
     if(!isLink(String(value))) {
-      throw new ottoman.ValidationError(`Field ${this.name} only allows Link`)
+      throw new ValidationError(`Field ${this.name} only allows Link`)
     }
     return String(value)
   }
@@ -37,7 +37,7 @@ function isLink(value) {
 
 // Step 2 Register Custom Type
 var LinkTypeFactory = (name) => new LinkType(name)
-ottoman.registerType(LinkType.name, LinkTypeFactory)
+registerType(LinkType.name, LinkTypeFactory)
 
 // Step 3 Use it
 const airlineSchema = new Schema({
@@ -47,7 +47,7 @@ const airlineSchema = new Schema({
   link: LinkType
 })
 
-const Airline = model('Airline', airlineSchema)
+const Airline = ottoman.model('Airline', airlineSchema)
 
 const unitedAirlines = new Airline({
   callsign: 'United',
