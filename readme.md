@@ -9,7 +9,7 @@
 - [Source Code](https://github.com/couchbaselabs/node-ottoman)
 - [Sample Project (JavaScript)](https://github.com/couchbaselabs/try-ottoman)
 - [Sample Project (Typescript)](https://github.com/couchbaselabs/try-ottoman-ts)
-- [Ottoman Demo](https://github.com/httpjunkie/ottoman-demo)
+- [Ottoman 2.0 Demo](https://github.com/httpjunkie/ottoman-demo)
 
 ## Add collections and scope manually
 
