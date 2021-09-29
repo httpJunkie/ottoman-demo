@@ -1,15 +1,8 @@
 /* Demonstrate model and schema creation and persistence 
   of data with ottoman.save() */
 const { Ottoman, model, Schema } = require('ottoman')
-const ottoman = new Ottoman({collectionName: '_default'});
+const ottoman = new Ottoman({collectionName: '_default'})
 const chalk = require('chalk')
-
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
 
 // Create a standard schema for airline Models
 const airlineSchema = new Schema({
@@ -20,17 +13,14 @@ const airlineSchema = new Schema({
 
 // Plugins and Hooks are middleware, think lifecycle hooks!
 // They must be created before the Model instance
-
 const pluginLog = (airlineSchema) => {
-  airlineSchema.pre('save', (doc) => console.log(
-    `Saving Document: ${chalk.green.bold(doc.name)}`
-  ))
-
+  airlineSchema.pre('save', (doc) => 
+    console.log(`Saving Document: ${chalk.green.bold(doc.name)}`)
+  )
   airlineSchema.post('save', (doc) => 
     console.log(`Document: ${chalk.green.bold(doc.id)} has been saved`)
   )
-};
-
+}
 airlineSchema.plugin(pluginLog)
 
 /* Create refdoc index (faster for retrieving docs with id)
@@ -62,12 +52,21 @@ const saveDocument = async() => {
   }
 }
 
-// Ensure that all indexes exist on the server
-ottoman.ensureIndexes()
-  // Next, let's save our document and print a success message 
-  .then(async() => {
-    saveDocument()
-      .then(() => process.exit(0))
-      .catch((error) => console.log(error))
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
   
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  // Save our document and print a success message 
+  saveDocument()
+    .then(() => process.exit(0))
+    .catch((error) => console.log(error))
+}
+
+main()

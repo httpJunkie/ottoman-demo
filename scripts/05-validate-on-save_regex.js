@@ -1,29 +1,28 @@
 /* Validate a field on Model.save() using Ottoman addValidators()  */
-const { Ottoman, Schema } = require('ottoman')
+const { Ottoman, model, Schema } = require('ottoman')
 const ottoman = new Ottoman({collectionName: '_default'});
-
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
 
 const regx = /^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$/
 const airlineSchema = new Schema({ 
-  callsign: String, 
-  country: String, 
+  callsign: String,
+  country: String,
   name: String,
-  phone: { type: String, validator: {regexp: regx, message: 'phone invalid'}}
+  phone: {
+    type: String,
+    validator: {
+      regexp: regx,
+      message: 'phone invalid'
+    }
+  }
 })
 
-const Airline = ottoman.model('Airline', airlineSchema)
+const Airline = model('Airline', airlineSchema)
 
 const cbAirlines = new Airline({
   callsign: 'UA',
   country: 'United States',
   name: 'United Airlines',
-  phone: 'X-Z32-800-490-2021'
+  phone: 'ZXY-490-2021'
 })
 
 const saveDocument = async() => {
@@ -34,8 +33,23 @@ const saveDocument = async() => {
   }
 }
 
-saveDocument()
-  .catch((error) => {
-    console.log(error.message)
-    process.exit(0)
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
+  
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  saveDocument()
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.log(error)
+      process.exit(0)
+    })
+}
+
+main()

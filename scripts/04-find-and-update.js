@@ -2,13 +2,6 @@
 const { Ottoman, model, Schema, SearchConsistency } = require('ottoman')
 const ottoman = new Ottoman({collectionName: '_default'});
 
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
-
 const airlineSchema = new Schema({
   callsign: String,
   country: String,
@@ -41,12 +34,27 @@ const updateAirline = async(airline) => {
   }
 }
 
-findAirline()
-  .then((airline) => {
-    updateAirline(airline)
-      .then(() => {
-        findAirline()
-        .then(() => process.exit(0))
-      })
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
-  .catch((error) => console.log(error))
+  
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  findAirline()
+    .then((airline) => {
+      updateAirline(airline)
+        .then(() => {
+          findAirline()
+          .then(() => process.exit(0))
+        })
+    })
+    .catch((error) => console.log(error))
+
+}
+
+main()

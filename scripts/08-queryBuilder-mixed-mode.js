@@ -1,13 +1,6 @@
 /* Demonstrate Query Builder using Mixed Mode (Params/Access Functions) */
 const { Ottoman, Query } = require('ottoman')
-const ottoman = new Ottoman({collectionName: '_default'});
-
-ottoman.connect({
-    connectionString: 'couchbase://localhost',
-    bucketName: 'travel',
-    username: 'Administrator',
-    password: 'password'
-});
+const ottoman = new Ottoman({collectionName: '_default'})
 
 const generateQuery = async() => {
   try {
@@ -16,7 +9,7 @@ const generateQuery = async() => {
       { _type: {$eq: 'Airline'}}
     ] }
     // pass in our query as a condition expression
-    const query = new Query({ where }, 'default:`travel`')
+    const query = new Query({ where }, '`travel`._default._default')
       .select([
         { $field: 'name' }, 
         { $field: 'country' }
@@ -39,9 +32,26 @@ const executeQuery = async(query) => {
   }
 }
 
-generateQuery()
-  .then((query) => {
-    executeQuery(query)
-      .then(() => process.exit(0))
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
-  .catch((error) => console.log(error))
+  
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  generateQuery()
+    .then((query) => {
+      executeQuery(query)
+        .then(() => process.exit(0))
+    })
+    .catch((error) => {
+      console.log(error)
+      process.exit(0)
+    })
+}
+
+main()
