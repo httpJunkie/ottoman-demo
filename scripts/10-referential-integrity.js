@@ -1,13 +1,6 @@
 /* Show referential integrity (relationship constraint) */ 
-const ottoman = require('ottoman')
-const { model, Schema } = require('ottoman')
-
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
+const { Ottoman, model, Schema, SearchConsistency } = require('ottoman')
+const ottoman = new Ottoman({collectionName: '_default'})
 
 const airlineSchema = new Schema({
   callsign: String,
@@ -67,7 +60,7 @@ const createAndSaveRoute = async() => {
 const findRoutePopulateAirline = async() => {
   try {
     const filter = { source_airport: 'LAX'}
-    const options = { consistency: ottoman.SearchConsistency.LOCAL }
+    const options = { consistency: SearchConsistency.LOCAL }
     const laxRoute = await Route.findOne(filter,options)
 
     // Ottoman shortcut, normally you would have to find these 
@@ -80,12 +73,26 @@ const findRoutePopulateAirline = async() => {
   }
 }
 
-createAndSaveAirline()
-  .then(() => {
-    createAndSaveRoute()
-      .then(() => {
-        findRoutePopulateAirline()
-          .then(() => process.exit(0))
-      })
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
-  .catch((error) => console.log(error))
+  
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  createAndSaveAirline()
+    .then(() => {
+      createAndSaveRoute()
+        .then(() => {
+          findRoutePopulateAirline()
+            .then(() => process.exit(0))
+        })
+    })
+    .catch((error) => console.log(error))
+}
+
+main()

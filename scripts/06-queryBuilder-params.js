@@ -1,14 +1,7 @@
 /* Demonstrate Query Builder using Parameters */
 // const ottoman = require('ottoman')
 const { Ottoman, Query} = require('ottoman')
-const ottoman = new Ottoman({collectionName: '_default'});
-
-ottoman.connect({
-    connectionString: 'couchbase://localhost',
-    bucketName: 'travel',
-    username: 'Administrator',
-    password: 'password'
-});
+const ottoman = new Ottoman({collectionName: '_default'})
 
 const generateQuery = async() => {
   try {
@@ -40,9 +33,23 @@ const executeQuery = async(query) => {
   }
 }
 
-generateQuery()
-  .then((result) => {
-    executeQuery(result)
-      .then(() => process.exit(0))
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
-  .catch((error) => console.log(error))
+  
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  generateQuery()
+    .then((result) => {
+      executeQuery(result)
+        .then(() => process.exit(0))
+    })
+    .catch((error) => console.log(error))
+}
+
+main()

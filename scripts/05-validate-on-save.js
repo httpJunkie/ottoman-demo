@@ -1,13 +1,7 @@
 /* Validate a field on Model.save() using Ottoman addValidators()  */
 const { Ottoman, Schema, addValidators } = require('ottoman')
-const ottoman = new Ottoman({collectionName: '_default'});
+const ottoman = new Ottoman({collectionName: '_default'})
 const chalk = require('chalk')
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-})
 
 addValidators({
   phone: (value) => {
@@ -31,7 +25,7 @@ const cbAirlines = new Airline({
   callsign: 'UA',
   country: 'United States',
   name: 'United Airlines',
-  phone: 'X-Z32-800-490-2021'
+  phone: 'XYZ-490-2021'
 })
 
 const saveDocument = async() => {
@@ -42,8 +36,23 @@ const saveDocument = async() => {
   }
 }
 
-saveDocument()
-  .catch((error) => {
-    console.log(error.message)
-    process.exit(0)
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
   })
+  
+  // Call Ottoman Start which ensures indexes exist on server
+  await ottoman.start()
+  
+  saveDocument()
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.log(error)
+      process.exit(0)
+    })
+}
+
+main()
